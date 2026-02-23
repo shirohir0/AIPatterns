@@ -1,0 +1,30 @@
+[tool.black]
+line-length = 100
+
+[tool.flake8]
+max-line-length = 100
+extend-ignore = ["E203", "W503"]
+exclude = [".venv", "__pycache__", "build", "dist"]
+
+[tool.pylint.MASTER]
+ignore = [".venv"]
+
+[tool.pylint.FORMAT]
+max-line-length = 100
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = [
+  "missing-module-docstring",
+  "missing-function-docstring",
+  "missing-class-docstring",
+  "too-many-locals",
+  "too-many-branches",
+  "too-many-statements",
+  "too-many-arguments",
+]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+markers = [
+  "integration: tests that call real APIs",
+]

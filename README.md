@@ -1,19 +1,15 @@
-﻿# Учебные паттерны AI-агентов (Python)
+﻿# Учебные паттерны AI-агентов (LangChain)
 
 Минимальный учебный проект с базовыми паттернами из книги **Agentic Design Patterns**.
-Есть два варианта реализации:
-- прямой клиент DeepSeek через OpenAI SDK
-- через LangChain
+Реализация выполнена **только через LangChain** и DeepSeek (OpenAI-compatible API).
 
 ## Архитектура проекта
 ```
 AIProject/
   src/
-    agentic/            # паттерны без LangChain
-    agentic_lc/         # паттерны с LangChain
-  examples/             # сценарии запуска
-    demo.py
-    demo_langchain.py
+    agentic_lc/         # паттерны на LangChain
+    common/             # общие утилиты (логирование, память)
+  main.py               # единая точка входа
   .env
   .env.example
   README.md
@@ -40,14 +36,14 @@ python -m venv .venv
 DEEPSEEK_API_KEY=YOUR_KEY
 ```
 
-## Запуск (без LangChain)
+## Запуск
 ```powershell
-.\.venv\Scripts\python .\examples\demo.py
+.\.venv\Scripts\python .\main.py
 ```
 
-## Запуск (LangChain)
+Уровень логирования:
 ```powershell
-.\.venv\Scripts\python .\examples\demo_langchain.py
+.\.venv\Scripts\python .\main.py --log-level DEBUG
 ```
 
 Если в Windows консоли появляются ошибки кодировки, переключите консоль на UTF-8:
@@ -55,13 +51,25 @@ DEEPSEEK_API_KEY=YOUR_KEY
 chcp 65001
 ```
 
-## Где смотреть код
-- `src\agentic\llm_deepseek.py` — прямой клиент DeepSeek (OpenAI SDK)
-- `src\agentic_lc\llm.py` — клиент DeepSeek через LangChain
-- `src\agentic\patterns\` — паттерны без LangChain
-- `src\agentic_lc\patterns\` — паттерны с LangChain
-- `examples\demo.py` — демо без LangChain
-- `examples\demo_langchain.py` — демо с LangChain
+## Тесты (best practice)
+По умолчанию запускаются только unit-тесты.
 
-## Режим заглушки
-В проекте есть `src\agentic\llm_stub.py`, можно использовать его вместо реального API при отладке.
+Unit:
+```powershell
+.\.venv\Scripts\python -m pytest
+```
+
+Integration (реальные запросы в DeepSeek):
+```powershell
+$env:DEEPSEEK_API_KEY="YOUR_KEY"
+.\.venv\Scripts\python -m pytest --run-integration -m integration
+```
+
+## Где смотреть код
+- `src\agentic_lc\llm.py` — клиент DeepSeek через LangChain
+- `src\agentic_lc\patterns\` — паттерны
+- `src\agentic_lc\demo.py` — демонстрация
+- `src\common\logging_utils.py` — логирование
+- `src\common\memory.py` — простая память
+- `src\common\safe_eval.py` — безопасный eval
+- `main.py` — единый вход

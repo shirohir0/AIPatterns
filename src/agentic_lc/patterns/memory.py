@@ -2,7 +2,7 @@
 
 from typing import List
 
-from agentic.memory import SimpleMemory
+from common.memory import SimpleMemory
 from common.logging_utils import get_logger
 
 logger = get_logger(__name__)

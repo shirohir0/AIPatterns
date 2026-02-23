@@ -1,41 +1,14 @@
 ﻿from __future__ import annotations
 
-import ast
-import operator as op
-from typing import Callable, Dict, Tuple
+from typing import Tuple
 
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from common.logging_utils import get_logger
+from common.safe_eval import safe_eval
 
 logger = get_logger(__name__)
-
-
-_ALLOWED_OPS = {
-    ast.Add: op.add,
-    ast.Sub: op.sub,
-    ast.Mult: op.mul,
-    ast.Div: op.truediv,
-    ast.Pow: op.pow,
-    ast.USub: op.neg,
-}
-
-
-def _safe_eval(expr: str) -> float:
-    expr = expr.strip()
-
-    def _eval(node):
-        if isinstance(node, ast.Num):
-            return node.n
-        if isinstance(node, ast.UnaryOp) and type(node.op) in _ALLOWED_OPS:
-            return _ALLOWED_OPS[type(node.op)](_eval(node.operand))
-        if isinstance(node, ast.BinOp) and type(node.op) in _ALLOWED_OPS:
-            return _ALLOWED_OPS[type(node.op)](_eval(node.left), _eval(node.right))
-        raise ValueError("Unsupported expression")
-
-    parsed = ast.parse(expr, mode="eval")
-    return _eval(parsed.body)
 
 
 def _math_handler(query: str) -> str:
@@ -44,7 +17,7 @@ def _math_handler(query: str) -> str:
     expr = expr.strip()
     if not expr:
         return "Математическое выражение не найдено."
-    return f"Результат: {_safe_eval(expr)}"
+    return f"Результат: {safe_eval(expr)}"
 
 
 def _code_handler(_: str) -> str:

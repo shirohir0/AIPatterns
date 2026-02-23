@@ -10,6 +10,7 @@ from typing import Optional
 # 2) формат всегда одинаковый
 # 3) легко писать в файл, если понадобится
 
+
 def configure_logging(level: str = "INFO") -> None:
     """
     Настраивает базовое логирование.

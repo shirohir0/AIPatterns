@@ -33,8 +33,6 @@ def reflect_and_improve(llm: ChatOpenAI, question: str, answer: str) -> Tuple[st
         ]
     )
     revise_chain = revise_prompt | llm | StrOutputParser()
-    improved = revise_chain.invoke(
-        {"question": question, "answer": answer, "critique": critique}
-    )
+    improved = revise_chain.invoke({"question": question, "answer": answer, "critique": critique})
 
     return critique, improved

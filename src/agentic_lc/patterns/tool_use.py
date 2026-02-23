@@ -1,12 +1,13 @@
 ﻿from __future__ import annotations
 
 from datetime import date
-from typing import Dict, Tuple
 
 from langchain_core.messages import HumanMessage, ToolMessage
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
+
 from common.logging_utils import get_logger
+from common.safe_eval import safe_eval
 
 logger = get_logger(__name__)
 
@@ -14,12 +15,11 @@ logger = get_logger(__name__)
 @tool
 def calc(expression: str) -> str:
     """Простой калькулятор: поддерживает +, -, *, /, (), числа."""
-
     allowed = "0123456789+-*/(). "
-    cleaned = "".join(ch for ch in expression if ch in allowed)
-    if not cleaned.strip():
+    cleaned = "".join(ch for ch in expression if ch in allowed).strip()
+    if not cleaned:
         return "Нет выражения для вычисления."
-    return str(eval(cleaned, {"__builtins__": {}}))
+    return str(safe_eval(cleaned))
 
 
 @tool
@@ -68,9 +68,7 @@ def tool_use_agent(llm: ChatOpenAI, query: str) -> str:
         tool_args = call.get("args", {})
         logger.info("LC tool call | tool=%s | args=%s", tool_name, tool_args)
         tool_result = tool_map[tool_name].invoke(tool_args)
-        tool_messages.append(
-            ToolMessage(content=str(tool_result), tool_call_id=call["id"])
-        )
+        tool_messages.append(ToolMessage(content=str(tool_result), tool_call_id=call["id"]))
 
     final = model.invoke(messages + [response] + tool_messages)
     return final.content or ""

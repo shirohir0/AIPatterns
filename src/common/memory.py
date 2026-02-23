@@ -7,6 +7,7 @@ from common.logging_utils import get_logger
 
 logger = get_logger(__name__)
 
+
 @dataclass
 class SimpleMemory:
     """Простейшее хранилище в памяти с наивным поиском по ключевым словам."""

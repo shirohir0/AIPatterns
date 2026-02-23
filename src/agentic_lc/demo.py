@@ -1,13 +1,7 @@
 ﻿import sys
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src"
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
 
 from common.logging_utils import configure_logging, get_logger
-from agentic.memory import SimpleMemory
+from common.memory import SimpleMemory
 from agentic_lc import get_llm
 from agentic_lc.patterns import (
     prompt_chaining,
@@ -21,9 +15,10 @@ from agentic_lc.patterns import (
 logger = get_logger(__name__)
 
 
-def main() -> None:
-    # Включаем логирование, чтобы видеть ход работы паттернов.
-    configure_logging("INFO")
+def run_demo(log_level: str = "INFO") -> None:
+    """Запускает демонстрацию паттернов через LangChain."""
+
+    configure_logging(log_level)
 
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -65,7 +60,3 @@ def main() -> None:
     mem.add("note", "Маршрутизация выбирает специализированные обработчики.")
     hits = memory_demo(mem, "инструменты и память")
     logger.info("Найдено: %s", hits)
-
-
-if __name__ == "__main__":
-    main()
