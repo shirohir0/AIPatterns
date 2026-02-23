@@ -1,13 +1,12 @@
 ﻿import sys
 from pathlib import Path
 
-from common.logging_utils import configure_logging, get_logger
-
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
+from common.logging_utils import configure_logging, get_logger
 from agentic.llm_deepseek import DeepSeekLLM
 from agentic.memory import SimpleMemory
 from agentic.patterns import (
