@@ -21,7 +21,7 @@ def calc(expression: str) -> str:
 
 
 @tool
-def today(_: str) -> str:
+def today() -> str:
     """Сегодняшняя дата."""
     return date.today().isoformat()
 
